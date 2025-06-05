@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Women Security</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="icon" href="logo.png" type="image/svg+xml">
+    <link href="style.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+</head>
+
+<body>
+    <header>
+        <h2 class="logo"><img src="logo.png" width="50px" height="50px"> Women Security</h2>
+        <nav class="navigation">
+            <div class="hamburger" id="hamburger">
+                <ion-icon name="menu-outline"></ion-icon>
+            </div>
+            <a href="#">Home</a>
+            <a href="index3.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="index4.html">Contact</a>
+            <button class="btnLogin-popup">Login</button>
+        </nav>
+    </header>
+
+    <div class="main">
+        <div class="emergencyButton" id="policeDetails">
+            <h2>Emergency</h2>
+            <button id="emergencyButton" class="btn" onclick="findNearestPolice()">Emergency Alert!</button>
+        </div>
+    </div>
+    <div class="wrapper">
+
+        <!----------------------Login----------------------->
+
+        <span class="icon-close"><ion-icon name="close"></ion-icon></span>
+        <div class="form-box login">
+            <h2>Login</h2>
+            <form action="login.php" method="POST" id="login-form">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                    <input type="email" name="email" required>
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" name="password" required>
+                    <label>Password</label>
+                </div>
+
+                <div class="remember-forgot">
+                    <label><input type="checkbox">Remember Me</label>
+                    <a href="#">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <div class="login-register">
+                    <p>Don't have an account?<a href="#" class="register-link">Register</a></p>
+                </div>
+            </form>
+        </div>
+
+        <!------------------------------register------------------>
+
+        <div class="form-box register">
+            <h2>Registeration</h2>
+            <form action="register.php" method="POST">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="person"></ion-icon></span>
+                    <input type="text" name="username" required>
+                    <label>Username</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                    <input type="email" name="email" required>
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" name="password" required>
+                    <label>Password</label>
+                </div>
+                <button type="submit" class="btn">Register</button>
+                <div class="login-register">
+                    <p>Already have an account?<a href="#" class="login-link">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script1.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+
+
+    <script>
+        // document.getElementById("loginForm").addEventListener("submit", function (event) {
+        //  event.preventDefault();
+
+        let email = document.getElementById("email").value;
+        let password = document.getElementById("password").value;
+        let errorMessage = document.getElementById("errorMessage");
+
+        if (!email.includes("@") || email.trim() === "") {
+            errorMessage.textContent = "Please enter a valid email address.";
+            return;
+        }
+
+        if (password.length < 6) {
+            errorMessage.textContent = "Password must be at least 6 characters long.";
+            return;
+        }
+
+        if (email === "admin@example.com" && password === "password123") {
+            alert("Login successful!");
+            window.location.href = "Women_security.html";
+        } else {
+            errorMessage.textContent = "Invalid email or password.";
+        }
+        //    });
+
+        // Add a fade-out transition before navigation
+        document.querySelectorAll('.options a').forEach(link => {
+            link.addEventListener('click', function (event) {
+                // Add fade-out class to body before navigating
+                document.body.classList.add('fade-out');
+
+                // Wait for the fade-out transition to complete before redirecting
+                setTimeout(() => {
+                    window.location.href = event.target.href;
+                }, 500); // Match the transition duration
+            });
+        });
+    </script>
+
+    <script>
+        function findNearestPolice() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPoliceStations, handleLocationError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPoliceStations(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            const map = new google.maps.Map(document.createElement("div")); // Invisible map
+
+            const service = new google.maps.places.PlacesService(map);
+            const request = {
+                location: new google.maps.LatLng(lat, lng),
+                radius: 5000,  // Search in 5 km
+                type: ['police']
+            };
+
+            service.nearbySearch(request, (results, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
+                    const station = results[0];
+
+                    document.getElementById("policeDetails").innerHTML = `
+                    <h3>🚓 Nearest Police Station:</h3>
+                    <p><strong>${station.name}</strong></p>
+                    <p>📍 ${station.vicinity}</p>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${station.geometry.location.lat()},${station.geometry.location.lng()}" target="_blank">
+                        👉 Get Directions
+                    </a>
+                `;
+                } else {
+                    alert("No nearby police stations found.");
+                }
+            });
+        }
+
+        function handleLocationError(error) {
+            alert("Error getting your location. Please enable location services and try again.");
+        }
+    </script>
+
+</body>
+
+</html>
